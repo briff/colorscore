@@ -21,17 +21,15 @@ function AppShell() {
       <div className="toolbar-slot" data-testid="toolbar-slot">
         <Toolbar />
       </div>
+      <div className="note-input-panel" data-testid="note-input-slot">
+        <NoteInputPanel />
+      </div>
+      <div className="editor-panel" data-testid="editor-slot">
+        <NoteEditor />
+        <LyricsEditor />
+      </div>
       <div className="score-canvas-slot" data-testid="canvas-slot">
         <ScoreCanvas />
-      </div>
-      <div className="bottom-panels">
-        <div className="note-input-panel" data-testid="note-input-slot">
-          <NoteInputPanel />
-        </div>
-        <div className="editor-panel" data-testid="editor-slot">
-          <NoteEditor />
-          <LyricsEditor />
-        </div>
       </div>
     </div>
   )
