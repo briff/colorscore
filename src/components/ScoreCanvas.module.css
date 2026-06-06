@@ -5,3 +5,15 @@
   padding: 1rem;
   box-sizing: border-box;
 }
+
+/* Keep the rendered SVG within the canvas to avoid layout overflow. */
+.scoreCanvas svg {
+  max-width: 100%;
+}
+
+/* Tighter padding on phones to maximise notation space. */
+@media (max-width: 600px) {
+  .scoreCanvas {
+    padding: 0.5rem;
+  }
+}
