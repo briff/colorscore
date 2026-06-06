@@ -1,14 +1,14 @@
 .app-shell {
   display: grid;
-  height: 100vh;
-  width: 100vw;
+  min-height: 100vh;
+  width: 100%;
   grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto 1fr;
+  grid-template-rows: auto auto auto auto;
   grid-template-areas:
     "toolbar"
+    "score-canvas"
     "note-input"
-    "editor"
-    "score-canvas";
+    "editor";
   gap: 0;
 }
 
@@ -16,12 +16,16 @@
   grid-area: toolbar;
   background-color: var(--color-toolbar-bg);
   border-bottom: 1px solid var(--color-border);
+  /* Keep score metadata + actions reachable while scrolling on mobile. */
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .note-input-panel {
   grid-area: note-input;
   background-color: var(--color-panel-bg);
-  border-bottom: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
   padding: var(--spacing-md);
   overflow-y: auto;
 }
@@ -29,7 +33,7 @@
 .editor-panel {
   grid-area: editor;
   background-color: var(--color-panel-bg);
-  border-bottom: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
   padding: var(--spacing-md);
   overflow-y: auto;
 }
@@ -38,11 +42,15 @@
   grid-area: score-canvas;
   background-color: var(--color-score-bg);
   overflow: auto;
+  /* Ensure the score gets usable space on mobile before the controls below. */
+  min-height: 45vh;
 }
 
 /* Desktop layout: >=1024px side-by-side */
 @media (min-width: 1024px) {
   .app-shell {
+    height: 100vh;
+    min-height: 0;
     grid-template-columns: 300px 1fr;
     grid-template-rows: auto auto 1fr;
     grid-template-areas:
@@ -51,13 +59,21 @@
       "editor score-canvas";
   }
 
+  .toolbar-slot {
+    position: static;
+  }
+
   .note-input-panel {
-    border-bottom: none;
+    border-top: none;
     border-right: 1px solid var(--color-border);
   }
 
   .editor-panel {
-    border-bottom: none;
+    border-top: none;
     border-right: 1px solid var(--color-border);
+  }
+
+  .score-canvas-slot {
+    min-height: 0;
   }
 }

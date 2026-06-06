@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { ScoreCanvas } from '../ScoreCanvas';
 import { ScoreProvider } from '../../store/ScoreContext';
 import { SelectionProvider } from '../../store/SelectionContext';
@@ -71,5 +71,43 @@ describe('ScoreCanvas', () => {
     // For now, we can't actually trigger note clicks since we don't have notes rendered
     // This test just verifies the prop is accepted
     expect(screen.getByTestId('score-canvas')).toBeInTheDocument();
+  });
+
+  it('sizes the rendered SVG to the measured container width (responsive)', () => {
+    // Simulate a narrow phone-width container via a stubbed ResizeObserver.
+    const observed: Element[] = [];
+    let trigger: (() => void) | undefined;
+
+    class MockResizeObserver {
+      constructor(private cb: () => void) {}
+      observe(el: Element) {
+        observed.push(el);
+        trigger = this.cb;
+      }
+      unobserve() {}
+      disconnect() {}
+    }
+
+    const originalRO = globalThis.ResizeObserver;
+    vi.stubGlobal('ResizeObserver', MockResizeObserver);
+
+    // Pretend the canvas container is 360px wide (typical small phone).
+    const clientWidthSpy = vi
+      .spyOn(HTMLElement.prototype, 'clientWidth', 'get')
+      .mockReturnValue(360);
+
+    try {
+      renderWithProviders(createMockScore('circles'));
+      // Fire the observer callback to apply the measured width.
+      act(() => {
+        trigger?.();
+      });
+
+      const svg = screen.getByTestId('circles-renderer');
+      expect(svg.getAttribute('width')).toBe('360');
+    } finally {
+      clientWidthSpy.mockRestore();
+      vi.stubGlobal('ResizeObserver', originalRO);
+    }
   });
 });
