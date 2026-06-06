@@ -18,11 +18,13 @@ function AppShell() {
 
   return (
     <div className="app-shell">
-      <div className="toolbar-slot" data-testid="toolbar-slot">
-        <Toolbar />
-      </div>
-      <div className="score-canvas-slot" data-testid="canvas-slot">
-        <ScoreCanvas />
+      <div className="top-half">
+        <div className="toolbar-slot" data-testid="toolbar-slot">
+          <Toolbar />
+        </div>
+        <div className="score-canvas-slot" data-testid="canvas-slot">
+          <ScoreCanvas />
+        </div>
       </div>
       <div className="bottom-panels">
         <div className="note-input-panel" data-testid="note-input-slot">

@@ -1,35 +1,41 @@
 .app-shell {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
   height: 100dvh; /* accounts for mobile browser chrome */
   width: 100%;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-areas:
-    "toolbar"
-    "score-canvas"
-    "bottom-panels";
-  gap: 0;
+}
+
+/* Top half: toolbar + score canvas together occupy exactly 50% of the screen */
+.top-half {
+  height: 50vh;
+  height: 50dvh;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .toolbar-slot {
-  grid-area: toolbar;
+  flex-shrink: 0;
+  overflow-y: auto;
   background-color: var(--color-toolbar-bg);
   border-bottom: 1px solid var(--color-border);
 }
 
 .score-canvas-slot {
-  grid-area: score-canvas;
-  background-color: var(--color-score-bg);
+  flex: 1;
   overflow: auto;
+  min-height: 0;
+  background-color: var(--color-score-bg);
 }
 
-/* Scrollable container for note-input and editor on mobile */
+/* Bottom half: note-input and editor, scrollable as one unit */
 .bottom-panels {
-  grid-area: bottom-panels;
+  flex: 1;
   overflow-y: auto;
-  border-top: 1px solid var(--color-border);
   min-height: 0;
+  border-top: 1px solid var(--color-border);
 }
 
 .note-input-panel {
@@ -46,6 +52,7 @@
 /* Desktop layout: >=1024px side-by-side */
 @media (min-width: 1024px) {
   .app-shell {
+    display: grid;
     grid-template-columns: 300px 1fr;
     grid-template-rows: auto 1fr;
     grid-template-areas:
@@ -53,7 +60,24 @@
       "bottom-panels score-canvas";
   }
 
+  /* Dissolve the wrapper so toolbar-slot and score-canvas-slot
+     participate directly in the parent grid. */
+  .top-half {
+    display: contents;
+  }
+
+  .toolbar-slot {
+    grid-area: toolbar;
+    overflow-y: unset;
+  }
+
+  .score-canvas-slot {
+    grid-area: score-canvas;
+    min-height: 0;
+  }
+
   .bottom-panels {
+    grid-area: bottom-panels;
     display: flex;
     flex-direction: column;
     overflow: hidden;
